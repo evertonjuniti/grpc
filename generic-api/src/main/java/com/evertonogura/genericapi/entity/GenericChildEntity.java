@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ChildTable")
+@Table(name = "Child_Table")
 public class GenericChildEntity {
 	
 	@Id
@@ -23,7 +23,7 @@ public class GenericChildEntity {
 	@Column(name = "Description")
 	private String description;
 	
-	@Column(name = "MyValue")
+	@Column(name = "My_Value")
 	private double value;
 	
 	@ManyToOne(fetch = FetchType.EAGER)

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import com.evertonogura.genericapi.model.GenericChildModel;
 
 @Entity
-@Table(name = "ParentTable")
+@Table(name = "Parent_Table")
 public class GenericEntity {
 	
 	@Id
@@ -26,10 +26,10 @@ public class GenericEntity {
 	@Column(name = "Name")
 	private String name;
 	
-	@Column(name = "IsActive")
+	@Column(name = "Is_Active")
 	private Boolean active;
 	
-	@Column(name = "ModifyDate")
+	@Column(name = "Modify_Date")
 	private Date date;
 	
 	@OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)

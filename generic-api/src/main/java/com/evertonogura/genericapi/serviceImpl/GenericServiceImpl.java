@@ -86,7 +86,7 @@ public class GenericServiceImpl implements GenericService {
 	private GenericModel toModel(GenericEntity entity) {
 		List<GenericChildModel> items = new ArrayList<GenericChildModel>();
 		
-		if (entity.getItems() != null && entity.getItems().isEmpty()) {
+		if (entity.getItems().size() > 0) {
 			for (GenericChildEntity entityItem : entity.getItems()) {
 				GenericChildModel item = new GenericChildModel(
 						entityItem.getId(),
