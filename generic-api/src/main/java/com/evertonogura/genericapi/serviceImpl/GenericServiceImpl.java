@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.evertonogura.genericapi.entity.GenericChildEntity;
 import com.evertonogura.genericapi.entity.GenericEntity;
+import com.evertonogura.genericapi.exception.GenericNotFoundException;
 import com.evertonogura.genericapi.model.GenericChildModel;
 import com.evertonogura.genericapi.model.GenericModel;
 import com.evertonogura.genericapi.repository.GenericRepository;
@@ -37,7 +38,7 @@ public class GenericServiceImpl implements GenericService {
 			return toModel(repository.save(result.get()));
 		}
 		else
-			return null;
+			throw new GenericNotFoundException(id);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class GenericServiceImpl implements GenericService {
 		if (result.isPresent())
 			return toModel(result.get());
 		else
-			return toModel(null);
+			throw new GenericNotFoundException(id);
 	}
 
 	@Override
@@ -68,6 +69,8 @@ public class GenericServiceImpl implements GenericService {
 		
 		if (result.isPresent())
 			repository.delete(result.get());
+		else
+			throw new GenericNotFoundException(id);
 	}
 	
 	private GenericEntity toEntity(GenericModel model) {
