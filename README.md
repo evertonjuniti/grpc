@@ -7,3 +7,19 @@ I'll try to implement this within some programming languages (like C#, Kotlin, S
 EBCDIC RFC: [https://www.ietf.org/rfc/rfc183.html](https://www.ietf.org/rfc/rfc183.html)
 
 Oscar Sanderson ISO-8583: [https://oscarsanderson.com/iso-8583/](https://oscarsanderson.com/iso-8583/)
+
+How to install C and C++ compiler on Windows: [https://www.freecodecamp.org/news/how-to-install-c-and-cpp-compiler-on-windows/](https://www.freecodecamp.org/news/how-to-install-c-and-cpp-compiler-on-windows/)
+
+MSYS2: [https://www.msys2.org/](https://www.msys2.org/)
+
+GCC: [https://gcc.gnu.org/install/](https://gcc.gnu.org/install/)
+
+To compile an .c file and output to and .o file, use the following command:
+
+'cc -c [.c filename]' -> -c will output the result in an .o file
+
+To make an .dll file, type the following command:
+
+'gcc -shared -o iso8583.dll dl_iso8583.o dl_iso8583_common.o dl_iso8583_defs_1987.o dl_iso8583_defs_1993.o dl_iso8583_fields.o dl_mem.o dl_output.o dl_str.o dl_time.o dl_timer.o'
+
+https://blog.quickbird.uk/calling-c-from-net-core-759563bab75d
