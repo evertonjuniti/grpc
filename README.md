@@ -23,3 +23,7 @@ To make an .dll file, type the following command:
 'gcc -shared -o iso8583.dll dl_iso8583.o dl_iso8583_common.o dl_iso8583_defs_1987.o dl_iso8583_defs_1993.o dl_iso8583_fields.o dl_mem.o dl_output.o dl_str.o dl_time.o dl_timer.o'
 
 https://blog.quickbird.uk/calling-c-from-net-core-759563bab75d
+
+https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-data-with-platform-invoke
+
+https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-classes-structures-and-unions
