@@ -1,0 +1,6 @@
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\bin\Debug\net6.0\CoverletSourceRootsMapping
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\obj\Debug\net6.0\NetCoreIso8583x64LibMsTest.csproj.AssemblyReference.cache
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\obj\Debug\net6.0\NetCoreIso8583x64LibMsTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\obj\Debug\net6.0\NetCoreIso8583x64LibMsTest.AssemblyInfoInputs.cache
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\obj\Debug\net6.0\NetCoreIso8583x64LibMsTest.AssemblyInfo.cs
+C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\obj\Debug\net6.0\NetCoreIso8583x64LibMsTest.csproj.CoreCompileInputs.cache

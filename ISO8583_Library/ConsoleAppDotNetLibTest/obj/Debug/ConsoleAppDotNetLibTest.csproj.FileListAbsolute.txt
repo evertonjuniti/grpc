@@ -1,9 +1,0 @@
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\bin\Debug\lib\iso8583.dll
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\bin\Debug\ConsoleAppDotNetLibTest.exe.config
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\bin\Debug\ConsoleAppDotNetLibTest.exe
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\bin\Debug\ConsoleAppDotNetLibTest.pdb
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\obj\Debug\ConsoleAppDotNetLibTest.csproj.AssemblyReference.cache
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\obj\Debug\ConsoleAppDotNetLibTest.csproj.SuggestedBindingRedirects.cache
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\obj\Debug\ConsoleAppDotNetLibTest.csproj.CoreCompileInputs.cache
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\obj\Debug\ConsoleAppDotNetLibTest.exe
-C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\ConsoleAppDotNetLibTest\obj\Debug\ConsoleAppDotNetLibTest.pdb
