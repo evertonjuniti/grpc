@@ -34,4 +34,16 @@ namespace ConsoleAppDotNetLibTest.iso8583.Structure
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1 + 128)]
         public DL_ISO8583_MSG_FIELD[] field;
     }
+
+    public struct CFile
+    {
+        IntPtr _ptr;
+        int _cnt;
+        IntPtr _base;
+        int _flag;
+        public int _file;
+        int _charbuf;
+        int _bufsiz;
+        IntPtr _tmpfname;
+    }
 }

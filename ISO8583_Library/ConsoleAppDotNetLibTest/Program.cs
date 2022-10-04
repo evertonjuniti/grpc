@@ -12,16 +12,16 @@ namespace ConsoleAppDotNetLibTest
     {
         static void Main(string[] args)
         {
-            using (Message message = new Message())
+            using (IMessage message = new Message())
             {
-                message.AddMessage(0, "1234");
-                message.AddMessage(2, "1234567890123456");
-                message.AddMessage(4, "5699");
-                message.AddMessage(11, "234");
-                message.AddMessage(39, "4");
-                message.AddMessage(41, "12345");
-                message.AddMessage(42, "678901234");
-                message.AddMessage(125, "BLAH BLAH");
+                message.SetMessage(0, "1234");
+                message.SetMessage(2, "1234567890123456");
+                message.SetMessage(4, "5699");
+                message.SetMessage(11, "234");
+                message.SetMessage(39, "4");
+                message.SetMessage(41, "12345");
+                message.SetMessage(42, "678901234");
+                message.SetMessage(125, "BLAH BLAH");
 
                 Console.WriteLine(message.GetMessage());
 
