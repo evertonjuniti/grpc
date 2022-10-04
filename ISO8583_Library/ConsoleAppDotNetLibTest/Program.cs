@@ -27,7 +27,11 @@ namespace ConsoleAppDotNetLibTest
 
                 Console.WriteLine(Environment.NewLine);
 
-                message.Dump();
+                //message.Dump();
+
+                message.PackMessage();
+
+                message.UnpackMessage();
             }
             /*
             Byte buffer = new Byte();

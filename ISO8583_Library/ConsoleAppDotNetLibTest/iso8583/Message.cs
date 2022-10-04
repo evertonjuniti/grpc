@@ -23,7 +23,13 @@ namespace ConsoleAppDotNetLibTest.iso8583
         public static extern uint MsgSetField(uint field, string dataStr, ref DL_ISO8583_MSG message);
 
         [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_MSG_Pack", CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint PackMessage(ref IntPtr handler, ref DL_ISO8583_MSG message, ref byte[] byteArray, ref uint numBytes);
+        public static extern uint PackMessage(ref DL_ISO8583_HANDLER handler, ref DL_ISO8583_MSG message, byte[] byteArray, ref uint numBytes);
+
+        [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_MSG_Unpack", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint UnpackMessage(ref DL_ISO8583_HANDLER handler, byte[] byteArray, uint numBytes, ref DL_ISO8583_MSG message);
+
+        [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_MSG_Free", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void FreeMessage(ref DL_ISO8583_MSG message);
 
         [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_MSG_Dump", CallingConvention = CallingConvention.Cdecl)]
         public static extern void DumpMessage([In] CFile file, IntPtr EolStr, ref DL_ISO8583_HANDLER handler, ref DL_ISO8583_MSG message);
@@ -37,6 +43,8 @@ namespace ConsoleAppDotNetLibTest.iso8583
         private uint bufferSize;
         private DL_ISO8583_HANDLER handler;
         private DL_ISO8583_MSG isoMessage;
+        byte[] byteArray;
+        uint packedSize;
 
         public Message()
         {
@@ -52,6 +60,23 @@ namespace ConsoleAppDotNetLibTest.iso8583
         public void SetMessage(uint position, string message)
         {
             MsgSetField(position, message, ref isoMessage);
+        }
+
+        public void PackMessage()
+        {
+            byteArray = new byte[1000];
+            packedSize = 0;
+
+            PackMessage(ref handler, ref isoMessage, byteArray, ref packedSize);
+
+            FreeMessage(ref isoMessage);
+        }
+
+        public void UnpackMessage()
+        {
+            bufferSize = 0;
+            Init(IntPtr.Zero, bufferSize, ref isoMessage);
+            UnpackMessage(ref handler, byteArray, packedSize, ref isoMessage);
         }
 
         public string GetMessage()

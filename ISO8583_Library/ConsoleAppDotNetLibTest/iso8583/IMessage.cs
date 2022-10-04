@@ -14,6 +14,16 @@ namespace ConsoleAppDotNetLibTest.iso8583
         /// <param name="message">The message to be set on a field</param>
         void SetMessage(uint position, string message);
 
+        /// <summary>
+        /// Pack the ISO-8583 message. It transforms all given fields into an packed message in hex for transport
+        /// </summary>
+        void PackMessage();
+
+        /// <summary>
+        /// Unpack the ISO-8583 message. It transforms an packed message in hex into fields for an ISO-8583 message
+        /// </summary>
+        void UnpackMessage();
+
         string GetMessage();
 
         void Dump();
