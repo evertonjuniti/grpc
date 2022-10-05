@@ -6,8 +6,11 @@ namespace NetCoreIso8583x64Lib
     {
         private const string LIB_PATH = @"iso8583.dll";
 
+        [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_DEFS_1987_GetHandler", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void GetHandler1987(ref DL_ISO8583_HANDLER handler);
+
         [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_DEFS_1993_GetHandler", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void GetHandler(ref DL_ISO8583_HANDLER handler);
+        private static extern void GetHandler1993(ref DL_ISO8583_HANDLER handler);
 
         [DllImport(LIB_PATH, EntryPoint = "DL_ISO8583_MSG_Init", CallingConvention = CallingConvention.Cdecl)]
         private static extern void Init(IntPtr buffer, uint bufferSize, ref DL_ISO8583_MSG message);
@@ -32,18 +35,49 @@ namespace NetCoreIso8583x64Lib
         private DL_ISO8583_HANDLER handler;
         private DL_ISO8583_MSG isoMessage;
 
+        private STANDARD standard;
         private uint packedSize;
-        private byte[]? byteArray = null;
+        private byte[] byteArray;
 
+        /// <summary>
+        /// Default constructor, it assumes the default use of ISO-8583 message standard from 1993
+        /// </summary>
         public Message()
         {
-            this.messages = new Dictionary<uint, string>();
+            InitializeVariables();
+            this.standard = STANDARD.ISO_8583_1993;
         }
 
-        private void InitializeMessage()
+        /// <summary>
+        /// Constructor where you define which standard will be used for ISO-8583 messages
+        /// </summary>
+        /// <param name="standard">enum where you can choose the ISO-8583 standard, that can be the 1993 standard or 1987 standard</param>
+        public Message(STANDARD standard)
+        {
+            InitializeVariables();
+            this.standard = standard;
+        }
+
+        private void InitializeVariables()
+        {
+            this.messages = new Dictionary<uint, string>();
+            this.packedSize = 0;
+            this.byteArray = new byte[1000];
+        }
+
+        private void InitializeIsoMessage()
         {
             this.handler = new DL_ISO8583_HANDLER();
-            GetHandler(ref this.handler);
+
+            switch(this.standard)
+            {
+                case STANDARD.ISO_8583_1987:
+                    GetHandler1987(ref this.handler);
+                    break;
+                default:
+                    GetHandler1993(ref this.handler);
+                    break;
+            }
 
             uint bufferSize = 0;
             this.isoMessage = new DL_ISO8583_MSG();
@@ -68,7 +102,7 @@ namespace NetCoreIso8583x64Lib
 
         public void PackMessage()
         {
-            InitializeMessage();
+            InitializeIsoMessage();
 
             foreach (KeyValuePair<uint, string> message in this.messages)
                 MsgSetField(message.Key, message.Value, ref this.isoMessage);
@@ -96,7 +130,7 @@ namespace NetCoreIso8583x64Lib
 
         public void UnpackMessage(uint packedSize, byte[] byteArray)
         {
-            InitializeMessage();
+            InitializeIsoMessage();
             UnpackMessage(ref this.handler, byteArray, packedSize, ref this.isoMessage);
 
             this.messages = new Dictionary<uint, string>();
@@ -115,7 +149,6 @@ namespace NetCoreIso8583x64Lib
         {
             GC.SuppressFinalize(this);
             this.messages.Clear();
-            this.byteArray = null;
         }
     }
 }
