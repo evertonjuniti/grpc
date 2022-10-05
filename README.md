@@ -27,3 +27,7 @@ https://blog.quickbird.uk/calling-c-from-net-core-759563bab75d
 https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-data-with-platform-invoke
 
 https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-classes-structures-and-unions
+
+https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types
+
+https://codereview.stackexchange.com/questions/190907/custom-enumeration-classes

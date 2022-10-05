@@ -7,28 +7,16 @@
     public interface IMessage : IDisposable
     {
         /// <summary>
-        /// Get the byte array of an ISO-8583 message after calling PackMessage method
-        /// </summary>
-        /// <returns>An byte array that represents the packed message</returns>
-        byte[] GetByteArray();
-
-        /// <summary>
         /// Gets the collection of messages already set, no matter if it was set by SetMessage or SetMessages method
         /// </summary>
         /// <returns>An IDictionary<uint, string> strucure where TKey (uint) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
         IDictionary<uint, string> GetMessages();
 
         /// <summary>
-        /// Get the packed size of an ISO-8583 message after calling PackMessage method
-        /// </summary>
-        /// <returns>An unsigned integer that represents the total packed size</returns>
-        uint GetPackedSize();
-
-        /// <summary>
         /// Pack the ISO-8583 message. It transforms all given fields in the IDictionary collection into an packed message in hex for transport
         /// </summary>
         /// <returns>A byte array representation after processing the ISO-8583 message with all fields</returns>
-        void PackMessage();
+        byte[] PackMessage();
 
         /// <summary>
         /// Sets a message in one of 129 fields available. Internally it will add the message in a IDictionary<uint, string> structure
@@ -46,8 +34,7 @@
         /// <summary>
         /// Unpack the ISO-8583 message. It transforms an packed message in hex into fields for an ISO-8583 message using an IDictionary<uint, string> structure, that can be consumed with GetMessages method
         /// </summary>
-        /// <param name="packedSize"></param>
         /// <param name="byteArray">A byte array that represents a packed ISO-8583 message</param>
-        void UnpackMessage(uint packedSize, byte[] byteArray);
+        void UnpackMessage(byte[] byteArray);
     }
 }

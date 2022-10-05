@@ -36,8 +36,6 @@ namespace NetCoreIso8583x64Lib
         private DL_ISO8583_MSG isoMessage;
 
         private STANDARD standard;
-        private uint packedSize;
-        private byte[] byteArray;
 
         /// <summary>
         /// Default constructor, it assumes the default use of ISO-8583 message standard from 1993
@@ -61,8 +59,6 @@ namespace NetCoreIso8583x64Lib
         private void InitializeVariables()
         {
             this.messages = new Dictionary<uint, string>();
-            this.packedSize = 0;
-            this.byteArray = new byte[1000];
         }
 
         private void InitializeIsoMessage()
@@ -85,34 +81,52 @@ namespace NetCoreIso8583x64Lib
             Init(IntPtr.Zero, bufferSize, ref this.isoMessage);
         }
 
-        public byte[] GetByteArray()
-        {
-            return this.byteArray;
-        }
-
         public IDictionary<uint, string> GetMessages()
         {
             return this.messages;
         }
 
-        public uint GetPackedSize()
-        {
-            return this.packedSize;
-        }
-
-        public void PackMessage()
+        public byte[] PackMessage()
         {
             InitializeIsoMessage();
 
+            uint messagesSize = 0;
+
             foreach (KeyValuePair<uint, string> message in this.messages)
                 MsgSetField(message.Key, message.Value, ref this.isoMessage);
+            
+            for (uint index = 0; index < this.isoMessage.field.Length; index++)
+            {
+                if (this.isoMessage.field[index].len > 0)
+                {
+                    Enumeration field;
 
-            this.byteArray = new byte[1000];
-            this.packedSize = 0;
+                    switch (this.standard)
+                    {
+                        case STANDARD.ISO_8583_1987:
+                            field = Enumeration.GetAll<ISO_8583_1987_FIELD>().FirstOrDefault(field => field.Position == index);
+                            break;
+                        default:
+                            field = Enumeration.GetAll<ISO_8583_1993_FIELD>().FirstOrDefault(field => field.Position == index);
+                            break;
+                    }
 
-            PackMessage(ref this.handler, ref this.isoMessage, this.byteArray, ref this.packedSize);
+                    if (field.FieldType.Equals(FIELD_TYPE.VARIABLE_99) ||
+                        field.FieldType.Equals(FIELD_TYPE.VARIABLE_999))
+                        messagesSize += this.isoMessage.field[index].len;
+                    else
+                        messagesSize += field.MaxFieldSize;
+                }                
+            }
+
+            byte[] byteArray = new byte[messagesSize - 1];
+            uint packedSize = 0;
+
+            PackMessage(ref this.handler, ref this.isoMessage, byteArray, ref packedSize);
 
             FreeMessage(ref this.isoMessage);
+
+            return byteArray;
         }
 
         public void SetMessage(uint position, string message)
@@ -128,10 +142,10 @@ namespace NetCoreIso8583x64Lib
             this.messages = messages;
         }
 
-        public void UnpackMessage(uint packedSize, byte[] byteArray)
+        public void UnpackMessage(byte[] byteArray)
         {
             InitializeIsoMessage();
-            UnpackMessage(ref this.handler, byteArray, packedSize, ref this.isoMessage);
+            UnpackMessage(ref this.handler, byteArray, (uint)byteArray.Length, ref this.isoMessage);
 
             this.messages = new Dictionary<uint, string>();
 
