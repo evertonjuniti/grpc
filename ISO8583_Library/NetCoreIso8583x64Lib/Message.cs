@@ -31,6 +31,10 @@ namespace NetCoreIso8583x64Lib
         private static extern void FreeMessage(ref DL_ISO8583_MSG message);
 
         private IDictionary<uint, string> messages;
+        private IDictionary<ISO_8583_1987, string>? messages1987;
+        private IDictionary<ISO_8583_1987_FIELD, string>? messages1987CustomEnum;
+        private IDictionary<ISO_8583_1993, string>? messages1993;
+        private IDictionary<ISO_8583_1993_FIELD, string>? messages1993CustomEnum;
 
         private DL_ISO8583_HANDLER handler;
         private DL_ISO8583_MSG isoMessage;
@@ -86,15 +90,47 @@ namespace NetCoreIso8583x64Lib
             return this.messages;
         }
 
+        public IDictionary<ISO_8583_1987, string>? GetMessages1987()
+        {
+            return this.messages1987;
+        }
+
+        public IDictionary<ISO_8583_1987_FIELD, string>? GetMessages1987CustomEnum()
+        {
+            return this.messages1987CustomEnum;
+        }
+
+        public IDictionary<ISO_8583_1993, string>? GetMessages1993()
+        {
+            return this.messages1993;
+        }
+
+        public IDictionary<ISO_8583_1993_FIELD, string>? GetMessages1993CustomEnum()
+        {
+            return this.messages1993CustomEnum;
+        }
+
         public byte[] PackMessage()
         {
             InitializeIsoMessage();
 
-            uint messagesSize = 0;
-
             foreach (KeyValuePair<uint, string> message in this.messages)
                 MsgSetField(message.Key, message.Value, ref this.isoMessage);
             
+            byte[] byteArray = new byte[SumMessageFieldSize()];
+            uint packedSize = 0;
+
+            PackMessage(ref this.handler, ref this.isoMessage, byteArray, ref packedSize);
+
+            FreeMessage(ref this.isoMessage);
+
+            return byteArray;
+        }
+
+        private uint SumMessageFieldSize()
+        {
+            uint messagesSize = 0;
+
             for (uint index = 0; index < this.isoMessage.field.Length; index++)
             {
                 if (this.isoMessage.field[index].len > 0)
@@ -104,29 +140,21 @@ namespace NetCoreIso8583x64Lib
                     switch (this.standard)
                     {
                         case STANDARD.ISO_8583_1987:
-                            field = Enumeration.GetAll<ISO_8583_1987_FIELD>().FirstOrDefault(field => field.Position == index);
+                            field = Enumeration.GetAll<ISO_8583_1987_FIELD>().First(field => field.Position == index);
                             break;
                         default:
-                            field = Enumeration.GetAll<ISO_8583_1993_FIELD>().FirstOrDefault(field => field.Position == index);
+                            field = Enumeration.GetAll<ISO_8583_1993_FIELD>().First(field => field.Position == index);
                             break;
                     }
 
-                    if (field.FieldType.Equals(FIELD_TYPE.VARIABLE_99) ||
-                        field.FieldType.Equals(FIELD_TYPE.VARIABLE_999))
-                        messagesSize += this.isoMessage.field[index].len;
-                    else
-                        messagesSize += field.MaxFieldSize;
-                }                
+                    messagesSize += (field.FieldType.Equals(FIELD_TYPE.VARIABLE_99) || 
+                                     field.FieldType.Equals(FIELD_TYPE.VARIABLE_999)) 
+                                     ? this.isoMessage.field[index].len 
+                                     : field.MaxFieldSize;
+                }
             }
 
-            byte[] byteArray = new byte[messagesSize - 1];
-            uint packedSize = 0;
-
-            PackMessage(ref this.handler, ref this.isoMessage, byteArray, ref packedSize);
-
-            FreeMessage(ref this.isoMessage);
-
-            return byteArray;
+            return messagesSize - 1;
         }
 
         public void SetMessage(uint position, string message)
@@ -137,9 +165,101 @@ namespace NetCoreIso8583x64Lib
                 this.messages.Add(new KeyValuePair<uint, string>(position, message));
         }
 
+        public void SetMessage(ISO_8583_1987 field, string message)
+        {
+            if (this.messages1987 == null)
+                this.messages1987 = new Dictionary<ISO_8583_1987, string>();
+
+            if (this.messages1987.ContainsKey(field))
+                this.messages1987[field] = message;
+            else
+                this.messages1987.Add(new KeyValuePair<ISO_8583_1987, string>(field, message));
+
+            SetMessage((uint)field, message);
+        }
+
+        public void SetMessage(ISO_8583_1987_FIELD field, string message)
+        {
+            if (this.messages1987CustomEnum == null)
+                this.messages1987CustomEnum = new Dictionary<ISO_8583_1987_FIELD, string>();
+
+            if (this.messages1987CustomEnum.ContainsKey(field))
+                this.messages1987CustomEnum[field] = message;
+            else
+                this.messages1987CustomEnum.Add(new KeyValuePair<ISO_8583_1987_FIELD, string>(field, message));
+
+            SetMessage(field.Position, message);
+        }
+
+        public void SetMessage(ISO_8583_1993 field, string message)
+        {
+            if (this.messages1993 == null)
+                this.messages1993 = new Dictionary<ISO_8583_1993, string>();
+
+            if (this.messages1993.ContainsKey(field))
+                this.messages1993[field] = message;
+            else
+                this.messages1993.Add(new KeyValuePair<ISO_8583_1993, string>(field, message));
+
+            SetMessage((uint)field, message);
+        }
+
+        public void SetMessage(ISO_8583_1993_FIELD field, string message)
+        {
+            if (this.messages1993CustomEnum == null)
+                this.messages1993CustomEnum = new Dictionary<ISO_8583_1993_FIELD, string>();
+
+            if (this.messages1993CustomEnum.ContainsKey(field))
+                this.messages1993CustomEnum[field] = message;
+            else
+                this.messages1993CustomEnum.Add(new KeyValuePair<ISO_8583_1993_FIELD, string>(field, message));
+
+            SetMessage(field.Position, message);
+        }
+
         public void SetMessages(IDictionary<uint, string> messages)
         {
             this.messages = messages;
+        }
+
+        public void SetMessages(IDictionary<ISO_8583_1987, string> messages)
+        {
+            this.messages1987 = messages;
+
+            this.messages.Clear();
+
+            foreach (KeyValuePair<ISO_8583_1987, string> message in messages)
+                this.messages.Add((uint)message.Key, message.Value);
+        }
+
+        public void SetMessages(IDictionary<ISO_8583_1987_FIELD, string> messages)
+        {
+            this.messages1987CustomEnum = messages;
+
+            this.messages.Clear();
+
+            foreach (KeyValuePair<ISO_8583_1987_FIELD, string> message in messages)
+                this.messages.Add(message.Key.Position, message.Value);
+        }
+
+        public void SetMessages(IDictionary<ISO_8583_1993, string> messages)
+        {
+            this.messages1993 = messages;
+
+            this.messages.Clear();
+
+            foreach (KeyValuePair<ISO_8583_1993, string> message in messages)
+                this.messages.Add((uint)message.Key, message.Value);
+        }
+
+        public void SetMessages(IDictionary<ISO_8583_1993_FIELD, string> messages)
+        {
+            this.messages1993CustomEnum = messages;
+
+            this.messages.Clear();
+
+            foreach (KeyValuePair<ISO_8583_1993_FIELD, string> message in messages)
+                this.messages.Add(message.Key.Position, message.Value);
         }
 
         public void UnpackMessage(byte[] byteArray)
@@ -161,8 +281,28 @@ namespace NetCoreIso8583x64Lib
 
         public void Dispose()
         {
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
-            this.messages.Clear();
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.messages.Clear();
+
+                if (this.messages1987 != null)
+                    this.messages1987.Clear();
+
+                if (this.messages1987CustomEnum != null)
+                    this.messages1987CustomEnum.Clear();
+
+                if (this.messages1993 != null)
+                    this.messages1993.Clear();
+
+                if (this.messages1993CustomEnum != null)
+                    this.messages1993CustomEnum.Clear();
+            }
         }
     }
 }

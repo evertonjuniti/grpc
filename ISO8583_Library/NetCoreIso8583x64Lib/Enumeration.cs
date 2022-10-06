@@ -56,11 +56,6 @@ namespace NetCoreIso8583x64Lib
                    MaxFieldSize.CompareTo(((Enumeration)other).MaxFieldSize);
         }
 
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
         public static bool operator ==(Enumeration left, Enumeration right)
         {
             if (ReferenceEquals(left, null))
