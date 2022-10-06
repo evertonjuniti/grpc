@@ -1,7 +1,9 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace NetCoreIso8583x64Lib
 {
+    [ExcludeFromCodeCoverage]
     public abstract partial class Enumeration : IComparable
     {
         public uint Position { get; }

@@ -1,5 +1,8 @@
-﻿namespace NetCoreIso8583x64Lib
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NetCoreIso8583x64Lib
 {
+    [ExcludeFromCodeCoverage]
     public class ISO_8583_1987_FIELD : Enumeration
     {
         /// <summary>
