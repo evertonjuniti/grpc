@@ -14,6 +14,8 @@ namespace NetCoreIso8583x64Lib
 
         public ushort MaxFieldSize { get; }
 
+        public string Message { get; set; }
+
         protected Enumeration(uint position, string description, STANDARD standard, FIELD_TYPE fieldType, ushort maxFieldSize)
         {
             Position = position;

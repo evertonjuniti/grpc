@@ -15,26 +15,26 @@
         /// <summary>
         /// Gets the collection of messages already set, no matter if it was set by SetMessage or SetMessages method
         /// </summary>
-        /// <returns>(nullable) An IDictionary<ISO_8583_1987, string> strucure where TKey (ISO_8583_1987 enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
-        IDictionary<ISO_8583_1987, string>? GetMessages1987();
+        /// <returns>An IDictionary<ISO_8583_1987, string> strucure where TKey (ISO_8583_1987 enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
+        IDictionary<ISO_8583_1987, string> GetMessages1987();
 
         /// <summary>
         /// Gets the collection of messages already set, no matter if it was set by SetMessage or SetMessages method
         /// </summary>
-        /// <returns>(nullable) An IDictionary<ISO_8583_1987_FIELD, string> strucure where TKey (ISO_8583_1987_FIELD custom enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
-        IDictionary<ISO_8583_1987_FIELD, string>? GetMessages1987CustomEnum();
+        /// <returns>An List<ISO_8583_1987_FIELD> with ISO_8583_1987_FIELD custom enum field representation</returns>
+        List<ISO_8583_1987_FIELD> GetMessages1987CustomEnum();
 
         /// <summary>
         /// Gets the collection of messages already set, no matter if it was set by SetMessage or SetMessages method
         /// </summary>
-        /// <returns>(nullable) An IDictionary<ISO_8583_1993, string> strucure where TKey (ISO_8583_1993 enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
-        IDictionary<ISO_8583_1993, string>? GetMessages1993();
+        /// <returns>An IDictionary<ISO_8583_1993, string> strucure where TKey (ISO_8583_1993 enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
+        IDictionary<ISO_8583_1993, string> GetMessages1993();
 
         /// <summary>
         /// Gets the collection of messages already set, no matter if it was set by SetMessage or SetMessages method
         /// </summary>
-        /// <returns>(nullable) An IDictionary<ISO_8583_1993_FIELD, string> strucure where TKey (ISO_8583_1993_FIELD custom enum) is one of 129 positions of available fields and TValue (string) is the message in the referenced position</returns>
-        IDictionary<ISO_8583_1993_FIELD, string>? GetMessages1993CustomEnum();
+        /// <returns>An List<ISO_8583_1993_FIELD> with ISO_8583_1993_FIELD custom enum field representation</returns>
+        List<ISO_8583_1993_FIELD> GetMessages1993CustomEnum();
 
         /// <summary>
         /// Pack the ISO-8583 message. It transforms all given fields in the IDictionary collection into an packed message in hex for transport
@@ -59,9 +59,8 @@
         /// <summary>
         /// Sets a message in one of 129 fields available. Internally it will add the message in a IDictionary<uint, string> structure
         /// </summary>
-        /// <param name="field">An ISO_8583_1987_FIELD custom enum that represents the field</param>
-        /// <param name="message">The message to be set on a field</param>
-        void SetMessage(ISO_8583_1987_FIELD field, string message);
+        /// <param name="field">An ISO_8583_1987_FIELD custom enum that represents the field. The message can be set using Message property</param>
+        void SetMessage(ISO_8583_1987_FIELD field);
 
         /// <summary>
         /// Sets a message in one of 129 fields available. Internally it will add the message in a IDictionary<uint, string> structure
@@ -73,9 +72,8 @@
         /// <summary>
         /// Sets a message in one of 129 fields available. Internally it will add the message in a IDictionary<uint, string> structure
         /// </summary>
-        /// <param name="field">An ISO_8583_1993_FIELD custom enum that represents the field</param>
-        /// <param name="message">The message to be set on a field</param>
-        void SetMessage(ISO_8583_1993_FIELD field, string message);
+        /// <param name="field">An ISO_8583_1993_FIELD custom enum that represents the field. The message can be set using Message property</param>
+        void SetMessage(ISO_8583_1993_FIELD field);
 
         /// <summary>
         /// Sets a collection of messages in a limit of 129 fields available. If a message was already set through SetMessage or SetMessages, this method will replace the old message with the new one if in the same position (TKey)
@@ -92,8 +90,8 @@
         /// <summary>
         /// Sets a collection of messages in a limit of 129 fields available. If a message was already set through SetMessage or SetMessages, this method will replace the old message with the new one if in the same position (TKey)
         /// </summary>
-        /// <param name="messages">A collection of messages with a ISO_8583_1987_FIELD custom enum field representation as a TKey (ISO_8583_1987_FIELD) and a message as a TValue (string) of an IDictionary object</param>
-        void SetMessages(IDictionary<ISO_8583_1987_FIELD, string> messages);
+        /// <param name="messages">A list of messages with a ISO_8583_1987_FIELD custom enum field representation</param>
+        void SetMessages(List<ISO_8583_1987_FIELD> messages);
 
         /// <summary>
         /// Sets a collection of messages in a limit of 129 fields available. If a message was already set through SetMessage or SetMessages, this method will replace the old message with the new one if in the same position (TKey)
@@ -104,8 +102,8 @@
         /// <summary>
         /// Sets a collection of messages in a limit of 129 fields available. If a message was already set through SetMessage or SetMessages, this method will replace the old message with the new one if in the same position (TKey)
         /// </summary>
-        /// <param name="messages">A collection of messages with a ISO_8583_1993_FIELD custom enum field representation as a TKey (ISO_8583_1993_FIELD) and a message as a TValue (string) of an IDictionary object</param>
-        void SetMessages(IDictionary<ISO_8583_1993_FIELD, string> messages);
+        /// <param name="messages">A list of messages with a ISO_8583_1993_FIELD custom enum field representation</param>
+        void SetMessages(List<ISO_8583_1993_FIELD> messages);
 
         /// <summary>
         /// Unpack the ISO-8583 message. It transforms an packed message in hex into fields for an ISO-8583 message using an IDictionary<uint, string> structure, that can be consumed with GetMessages method
