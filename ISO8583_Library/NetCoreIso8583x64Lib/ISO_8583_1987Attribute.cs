@@ -1,6 +1,6 @@
 ﻿namespace NetCoreIso8583x64Lib
 {
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field| AttributeTargets.Property)]
     public class ISO_8583_1987Attribute : Attribute
     {
         private ISO_8583_1987 field;
