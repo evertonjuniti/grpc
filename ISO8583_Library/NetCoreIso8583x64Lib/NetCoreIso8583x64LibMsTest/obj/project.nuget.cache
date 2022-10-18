@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Kn/zskrhnDGZyDxJbCfM7iORe/Iyph7WH+9uH06AbgjKWmUfiKwXuFjME14UsrOBTKx3yM1SH3iBC0VdN02aDA==",
+  "dgSpecHash": "bJ1YleUWJlJC0Y473X+VpxFJOVXVIftaZFwYfyNEel4s1nDc/bB9BtN5dvHvLTWPbBb1bMpjE82v3+328gwTHQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Everton Juniti Ogura\\Documents\\Github\\poc-iso8583\\ISO8583_Library\\NetCoreIso8583x64Lib\\NetCoreIso8583x64LibMsTest\\NetCoreIso8583x64LibMsTest.csproj",
   "expectedPackageFiles": [

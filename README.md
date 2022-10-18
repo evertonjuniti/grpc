@@ -33,3 +33,5 @@ https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice
 https://codereview.stackexchange.com/questions/190907/custom-enumeration-classes
 
 https://stackoverflow.com/questions/6637679/reflection-get-attribute-name-and-value-on-property
+
+Wireshark filter: ((tcp.dstport == 8080) or (tcp.dstport == 7158) or (tcp.dstport == 5051))

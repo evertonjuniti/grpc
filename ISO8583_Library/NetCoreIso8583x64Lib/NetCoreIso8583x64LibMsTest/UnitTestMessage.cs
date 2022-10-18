@@ -115,9 +115,12 @@ namespace NetCoreIso8583x64LibMsTest
 
         private void PackAndUnpack(IMessage message)
         {
-            byte[] packedMessage = message.PackMessage();
+            message.PackMessage();
 
-            message.UnpackMessage(packedMessage);
+            byte[] packedMessage = message.GetByteArray();
+            uint packedSize = message.GetPackedSize();
+
+            message.UnpackMessage(packedMessage, packedSize);
         }
 
         [TestMethod]
@@ -135,9 +138,7 @@ namespace NetCoreIso8583x64LibMsTest
                 message.SetMessageField(field8, fields[field8]);
                 message.SetMessageField(field8, alterntiveMessage);
 
-                byte[] packedMessage = message.PackMessage();
-
-                message.UnpackMessage(packedMessage);
+                PackAndUnpack(message);
 
                 IDictionary<uint, string> messages = message.GetMessageFields();
 
@@ -149,6 +150,10 @@ namespace NetCoreIso8583x64LibMsTest
                 Assert.IsTrue(messages[field6].Contains(fields[field6]));
                 Assert.IsTrue(messages[field7].Contains(fields[field7]));
                 Assert.IsTrue(messages[field8].Contains(alterntiveMessage));
+
+                message.SetStandard(STANDARD.ISO_8583_1987);
+
+                Assert.IsTrue(message.GetStandard().Equals(STANDARD.ISO_8583_1987));
             }
         }
 
@@ -343,6 +348,10 @@ namespace NetCoreIso8583x64LibMsTest
                 Assert.IsTrue(messages[(ISO_8583_1987)field6].Contains(fields[field6]));
                 Assert.IsTrue(messages[(ISO_8583_1987)field7].Contains(fields[field7]));
                 Assert.IsTrue(messages[(ISO_8583_1987)field8].Contains(fields[field8]));
+
+                message.Initialize();
+
+                Assert.IsTrue(messages.Count.Equals(0));
             }
         }
 
@@ -378,6 +387,10 @@ namespace NetCoreIso8583x64LibMsTest
                 Assert.IsTrue(messages.First(item => item.Position == field6).Message.Contains(fields[field6]));
                 Assert.IsTrue(messages.First(item => item.Position == field7).Message.Contains(fields[field7]));
                 Assert.IsTrue(messages.First(item => item.Position == field8).Message.Contains(fields[field8]));
+
+                message.Initialize();
+
+                Assert.IsTrue(messages.Count.Equals(0));
             }
         }
 
@@ -411,6 +424,10 @@ namespace NetCoreIso8583x64LibMsTest
                 Assert.IsTrue(messages[(ISO_8583_1993)field6].Contains(fields[field6]));
                 Assert.IsTrue(messages[(ISO_8583_1993)field7].Contains(fields[field7]));
                 Assert.IsTrue(messages[(ISO_8583_1993)field8].Contains(fields[field8]));
+
+                message.Initialize();
+
+                Assert.IsTrue(messages.Count.Equals(0));
             }
         }
 
@@ -446,6 +463,11 @@ namespace NetCoreIso8583x64LibMsTest
                 Assert.IsTrue(messages.First(item => item.Position == field6).Message.Contains(fields[field6]));
                 Assert.IsTrue(messages.First(item => item.Position == field7).Message.Contains(fields[field7]));
                 Assert.IsTrue(messages.First(item => item.Position == field8).Message.Contains(fields[field8]));
+
+                message.Initialize();
+                messages = message.GetMessageFieldsCustomEnum1993();
+
+                Assert.IsTrue(messages.Count.Equals(0));
             }
         }
 

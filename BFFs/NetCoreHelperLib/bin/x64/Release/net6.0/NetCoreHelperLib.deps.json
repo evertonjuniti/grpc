@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "NetCoreHelperLib/1.0.0": {
+        "dependencies": {
+          "NetCoreIso8583x64Lib": "1.0.0"
+        },
+        "runtime": {
+          "NetCoreHelperLib.dll": {}
+        }
+      },
+      "NetCoreIso8583x64Lib/1.0.0": {
+        "runtime": {
+          "NetCoreIso8583x64Lib.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NetCoreHelperLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NetCoreIso8583x64Lib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

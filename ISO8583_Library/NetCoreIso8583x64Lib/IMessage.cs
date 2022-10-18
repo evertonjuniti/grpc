@@ -8,6 +8,13 @@ namespace NetCoreIso8583x64Lib
     /// </summary>
     public interface IMessage : IDisposable
     {
+        #region Get_Method_Signature
+        /// <summary>
+        /// Gets the byte array representation of a packed message (only after you call PackMessage method)
+        /// </summary>
+        /// <returns>A byte array representing the packed message</returns>
+        byte[] GetByteArray();
+
         /// <summary>
         /// Gets the collection of fields in a messages already set (always from the last message), no matter if it was set by SetMessage or SetMessages method
         /// </summary>
@@ -46,11 +53,19 @@ namespace NetCoreIso8583x64Lib
         T GetMessage<T>() where T : class;
 
         /// <summary>
-        /// Pack the ISO-8583 message. It transforms all given fields in the IDictionary collection into an packed message in hex for transport
+        /// Gets the uint packed size of a packed message (only after you call PackMessage method)
         /// </summary>
-        /// <returns>A byte array representation after processing the ISO-8583 message with all fields</returns>
-        byte[] PackMessage();
+        /// <returns>A uint representing the total packed message size</returns>
+        uint GetPackedSize();
 
+        /// <summary>
+        /// Gets the current STANDARD choosen for the ISO 8583 messages
+        /// </summary>
+        /// <returns>An Enum of STANDARD representing the actual STANDARD</returns>
+        STANDARD GetStandard();
+        #endregion
+
+        #region Set_Method_Signature
         /// <summary>
         /// Sets a field in a message in one of 129 fields available. Internally it will add the message in a IDictionary<uint, string> structure
         /// </summary>
@@ -122,9 +137,29 @@ namespace NetCoreIso8583x64Lib
         void SetMessageFields(List<ISO_8583_1993_FIELD> fields);
 
         /// <summary>
+        /// Besides you choose the standard in the class constructor, you can change the STANDARD with this method
+        /// </summary>
+        /// <param name="standard">An Enum representing the STANDARD</param>
+        void SetStandard(STANDARD standard);
+        #endregion
+
+        #region Process_Method_Signature
+        /// <summary>
+        /// Initializes (clears) the internal ISO 8583 message structure. This is important to clean the next message you want to pack
+        /// </summary>
+        void Initialize();
+
+        /// <summary>
+        /// Pack the ISO-8583 message. It transforms all given fields in the IDictionary collection into an packed message in hex for transport
+        /// </summary>
+        /// <returns>A byte array representation after processing the ISO-8583 message with all fields</returns>
+        void PackMessage();
+
+        /// <summary>
         /// Unpack the ISO-8583 message. It transforms an packed message in hex into fields for an ISO-8583 message using an IDictionary<uint, string> structure, that can be consumed with GetMessages method
         /// </summary>
         /// <param name="byteArray">A byte array that represents a packed ISO-8583 message</param>
-        void UnpackMessage(byte[] byteArray);
+        void UnpackMessage(byte[] byteArray, uint size);
+        #endregion
     }
 }

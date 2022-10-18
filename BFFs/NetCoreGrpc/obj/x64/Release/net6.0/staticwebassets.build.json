@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "9dHDXb3nRz+egyLJlezxWL67fw51R6ESSLV/ydLzOqo=",
+  "Source": "NetCoreGrpc",
+  "BasePath": "_content/NetCoreGrpc",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

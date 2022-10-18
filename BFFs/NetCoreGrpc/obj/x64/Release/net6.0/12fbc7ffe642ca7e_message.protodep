@@ -1,0 +1,2 @@
+obj\x64\Release\net6.0\Protos/Message.cs \
+obj\x64\Release\net6.0\Protos/MessageGrpc.cs: Protos/message.proto

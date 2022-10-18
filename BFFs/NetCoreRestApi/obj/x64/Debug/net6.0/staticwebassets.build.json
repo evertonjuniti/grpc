@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Ux8Eb1ci7MoF8jJrRrbjmenng0gEz6ZMwQLbAGwKsPs=",
+  "Source": "NetCoreRestApi",
+  "BasePath": "_content/NetCoreRestApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace NetCoreIso8583x64Lib
@@ -35,16 +34,19 @@ namespace NetCoreIso8583x64Lib
         #endregion
 
         #region Private_Variable_Definition
+        private DL_ISO8583_HANDLER handler;
+        private DL_ISO8583_MSG isoMessage;
+
+        private STANDARD standard;
+
         private IDictionary<uint, string> fields;
         private IDictionary<ISO_8583_1987, string>? fieldsEnum1987;
         private List<ISO_8583_1987_FIELD>? fieldsCustomEnum1987;
         private IDictionary<ISO_8583_1993, string>? fieldsEnum1993;
         private List<ISO_8583_1993_FIELD>? fieldsCustomEnum1993;
 
-        private DL_ISO8583_HANDLER handler;
-        private DL_ISO8583_MSG isoMessage;
-
-        private STANDARD standard;
+        byte[] packedMessage;
+        uint packedSize;
         #endregion
 
         #region Class_Constructor
@@ -53,8 +55,8 @@ namespace NetCoreIso8583x64Lib
         /// </summary>
         public Message()
         {
-            InitializeVariables();
-            this.standard = STANDARD.ISO_8583_1993;
+            Initialize();
+            standard = STANDARD.ISO_8583_1993;
         }
 
         /// <summary>
@@ -63,22 +65,17 @@ namespace NetCoreIso8583x64Lib
         /// <param name="standard">enum where you can choose the ISO-8583 standard, that can be the 1993 standard or 1987 standard</param>
         public Message(STANDARD standard)
         {
-            InitializeVariables();
+            Initialize();
             this.standard = standard;
         }
         #endregion
 
         #region Variable_Initialization
-        private void InitializeVariables()
-        {
-            this.fields = new Dictionary<uint, string>();
-        }
-
         private void InitializeIsoMessage()
         {
-            this.handler = new DL_ISO8583_HANDLER();
+            handler = new DL_ISO8583_HANDLER();
 
-            switch(this.standard)
+            switch(standard)
             {
                 case STANDARD.ISO_8583_1987:
                     GetHandler1987(ref this.handler);
@@ -89,37 +86,65 @@ namespace NetCoreIso8583x64Lib
             }
 
             uint bufferSize = 0;
-            this.isoMessage = new DL_ISO8583_MSG();
+            isoMessage = new DL_ISO8583_MSG();
 
-            Init(IntPtr.Zero, bufferSize, ref this.isoMessage);
+            Init(IntPtr.Zero, bufferSize, ref isoMessage);
         }
 
         private void InitializeMessages1987()
         {
-            if (this.fieldsEnum1987 == null)
-                this.fieldsEnum1987 = new Dictionary<ISO_8583_1987, string>();
+            if (fieldsEnum1987 == null)
+                fieldsEnum1987 = new Dictionary<ISO_8583_1987, string>();
         }
 
         private void InitializeMessages1987CustomEnum()
         {
-            if (this.fieldsCustomEnum1987 == null)
-                this.fieldsCustomEnum1987 = new List<ISO_8583_1987_FIELD>();
+            if (fieldsCustomEnum1987 == null)
+                fieldsCustomEnum1987 = new List<ISO_8583_1987_FIELD>();
         }
 
         private void InitializeMessages1993()
         {
-            if (this.fieldsEnum1993 == null)
-                this.fieldsEnum1993 = new Dictionary<ISO_8583_1993, string>();
+            if (fieldsEnum1993 == null)
+                fieldsEnum1993 = new Dictionary<ISO_8583_1993, string>();
         }
 
         private void InitializeMessages1993CustomEnum()
         {
-            if (this.fieldsCustomEnum1993 == null)
-                this.fieldsCustomEnum1993 = new List<ISO_8583_1993_FIELD>();
+            if (fieldsCustomEnum1993 == null)
+                fieldsCustomEnum1993 = new List<ISO_8583_1993_FIELD>();
         }
         #endregion
 
         #region Private_Helper_Method
+        /// <summary>
+        /// Get a field total length (size) regarding the field type, using the field position to know the field
+        /// </summary>
+        /// <param name="fieldPosition">The field position relative to Enumerator</param>
+        /// <returns>Total size of the field</returns>
+        private uint GetMessageFieldSize(uint fieldPosition, bool fixedSize)
+        {
+            Enumeration field;
+
+            switch (standard)
+            {
+                case STANDARD.ISO_8583_1987:
+                    field = Enumeration.GetAll<ISO_8583_1987_FIELD>().First(field => field.Position == fieldPosition);
+                    break;
+                default:
+                    field = Enumeration.GetAll<ISO_8583_1993_FIELD>().First(field => field.Position == fieldPosition);
+                    break;
+            }
+            
+            if (fixedSize)
+                return field.MaxFieldSize;
+            else
+                return (field.FieldType.Equals(FIELD_TYPE.VARIABLE_99) ||
+                                 field.FieldType.Equals(FIELD_TYPE.VARIABLE_999))
+                                 ? isoMessage.field[fieldPosition].len
+                                 : field.MaxFieldSize;
+        }
+
         /// <summary>
         /// Gets all fields in IsoMessage and sum the field size, when variable fields it sums the length of that field
         /// </summary>
@@ -128,28 +153,9 @@ namespace NetCoreIso8583x64Lib
         {
             uint messagesSize = 0;
 
-            for (uint index = 0; index < this.isoMessage.field.Length; index++)
-            {
-                if (this.isoMessage.field[index].len > 0)
-                {
-                    Enumeration field;
-
-                    switch (this.standard)
-                    {
-                        case STANDARD.ISO_8583_1987:
-                            field = Enumeration.GetAll<ISO_8583_1987_FIELD>().First(field => field.Position == index);
-                            break;
-                        default:
-                            field = Enumeration.GetAll<ISO_8583_1993_FIELD>().First(field => field.Position == index);
-                            break;
-                    }
-
-                    messagesSize += (field.FieldType.Equals(FIELD_TYPE.VARIABLE_99) ||
-                                     field.FieldType.Equals(FIELD_TYPE.VARIABLE_999))
-                                     ? this.isoMessage.field[index].len
-                                     : field.MaxFieldSize;
-                }
-            }
+            for (uint index = 0; index < isoMessage.field.Length; index++)
+                if (isoMessage.field[index].len > 0)
+                    messagesSize += this.GetMessageFieldSize(index, false);
 
             return messagesSize - 1;
         }
@@ -177,9 +183,9 @@ namespace NetCoreIso8583x64Lib
                     case STANDARD.ISO_8583_1987:
                         ISO_8583_1987Attribute? attribute1987 = (ISO_8583_1987Attribute)property.GetCustomAttribute(typeof(ISO_8583_1987Attribute), false);
 
-                        if (attribute1987 != null)
+                        if (attribute1987 != null && property.GetValue(obj: typeClass) != null)
                         {
-                            this.SetMessageField((uint)attribute1987.Field, property.GetValue(obj: typeClass).ToString());
+                            SetMessageField((uint)attribute1987.Field, property.GetValue(obj: typeClass).ToString());
                             fieldsProcessed++;
                         }
 
@@ -187,9 +193,9 @@ namespace NetCoreIso8583x64Lib
                     default:
                         ISO_8583_1993Attribute? attribute1993 = (ISO_8583_1993Attribute)property.GetCustomAttribute(typeof(ISO_8583_1993Attribute), false);
 
-                        if (attribute1993 != null)
+                        if (attribute1993 != null && property.GetValue(obj: typeClass) != null)
                         {
-                            this.SetMessageField((uint)attribute1993.Field, property.GetValue(obj: typeClass).ToString());
+                            SetMessageField((uint)attribute1993.Field, property.GetValue(obj: typeClass).ToString());
                             fieldsProcessed++;
                         }
 
@@ -202,60 +208,84 @@ namespace NetCoreIso8583x64Lib
         }
         #endregion
 
+        #region Public_Initialization
+        public void Initialize()
+        {
+            fields = new Dictionary<uint, string>();
+
+            if (fieldsEnum1987 != null)
+                fieldsEnum1987.Clear();
+
+            if (fieldsCustomEnum1987 != null)
+                fieldsCustomEnum1987.Clear();
+
+            if (fieldsEnum1993 != null)
+                fieldsEnum1993.Clear();
+
+            if (fieldsCustomEnum1993 != null)
+                fieldsCustomEnum1993.Clear();
+        }
+        #endregion
+
         #region Get_Implementation
+        public byte[] GetByteArray()
+        {
+            return packedMessage;
+        }
+
         public IDictionary<uint, string> GetMessageFields()
         {
-            return this.fields;
+            return fields;
         }
 
         public IDictionary<ISO_8583_1987, string> GetMessageFieldsEnum1987()
         {
-            this.InitializeMessages1987();
-            this.fieldsEnum1987.Clear();
+            InitializeMessages1987();
+            fieldsEnum1987.Clear();
 
-            foreach(KeyValuePair<uint, string> field in this.fields)
-                this.fieldsEnum1987.Add(new KeyValuePair<ISO_8583_1987, string>((ISO_8583_1987)field.Key, field.Value));
+            foreach(KeyValuePair<uint, string> field in fields)
+                fieldsEnum1987.Add(new KeyValuePair<ISO_8583_1987, string>((ISO_8583_1987)field.Key, field.Value));
 
-            return this.fieldsEnum1987;
+            return fieldsEnum1987;
         }
 
         public List<ISO_8583_1987_FIELD> GetMessageFieldsCustomEnum1987()
         {
-            this.InitializeMessages1987CustomEnum();
-            this.fieldsCustomEnum1987.Clear();
+            InitializeMessages1987CustomEnum();
+            fieldsCustomEnum1987.Clear();
 
-            foreach (KeyValuePair<uint, string> field in this.fields)
+            foreach (KeyValuePair<uint, string> field in fields)
             {
                 ISO_8583_1987_FIELD newField = Enumeration.GetAll<ISO_8583_1987_FIELD>().First(fieldItem => fieldItem.Position == field.Key);
-                this.fieldsCustomEnum1987.Add(newField);
+                fieldsCustomEnum1987.Add(newField);
             }
 
-            return this.fieldsCustomEnum1987;
+            return fieldsCustomEnum1987;
         }
 
         public IDictionary<ISO_8583_1993, string> GetMessageFieldsEnum1993()
         {
-            this.InitializeMessages1993();
-            this.fieldsEnum1993.Clear();
+            InitializeMessages1993();
+            fieldsEnum1993.Clear();
 
-            foreach (KeyValuePair<uint, string> field in this.fields)
-                this.fieldsEnum1993.Add(new KeyValuePair<ISO_8583_1993, string>((ISO_8583_1993)field.Key, field.Value));
+            foreach (KeyValuePair<uint, string> field in fields)
+                fieldsEnum1993.Add(new KeyValuePair<ISO_8583_1993, string>((ISO_8583_1993)field.Key, field.Value));
             
-            return this.fieldsEnum1993;
+            return fieldsEnum1993;
         }
 
         public List<ISO_8583_1993_FIELD> GetMessageFieldsCustomEnum1993()
         {
-            this.InitializeMessages1993CustomEnum();
-            this.fieldsCustomEnum1993.Clear();
+            InitializeMessages1993CustomEnum();
+            fieldsCustomEnum1993.Clear();
 
-            foreach (KeyValuePair<uint, string> field in this.fields)
+            foreach (KeyValuePair<uint, string> field in fields)
             {
                 ISO_8583_1993_FIELD newField = Enumeration.GetAll<ISO_8583_1993_FIELD>().First(fieldItem => fieldItem.Position == field.Key);
-                this.fieldsCustomEnum1993.Add(newField);
+                fieldsCustomEnum1993.Add(newField);
             }
 
-            return this.fieldsCustomEnum1993;
+            return fieldsCustomEnum1993;
         }
 
         public T GetMessage<T>() where T : class
@@ -273,14 +303,14 @@ namespace NetCoreIso8583x64Lib
                         ISO_8583_1987Attribute? attribute1987 = (ISO_8583_1987Attribute)property.GetCustomAttribute(typeof(ISO_8583_1987Attribute), false);
                         
                         if (attribute1987 != null)
-                            property.SetValue(newT, this.fields[(uint)attribute1987.Field]);
+                            property.SetValue(newT, fields[(uint)attribute1987.Field]);
 
                         break;
                     default:
                         ISO_8583_1993Attribute? attribute1993 = (ISO_8583_1993Attribute)property.GetCustomAttribute(typeof(ISO_8583_1993Attribute), false);
                         
                         if ( attribute1993 != null )
-                            property.SetValue(newT, this.fields[(uint)attribute1993.Field]);
+                            property.SetValue(newT, fields[(uint)attribute1993.Field]);
 
                         break;
                 }
@@ -288,65 +318,75 @@ namespace NetCoreIso8583x64Lib
 
             return newT;
         }
+
+        public uint GetPackedSize()
+        {
+            return packedSize;
+        }
+
+        public STANDARD GetStandard()
+        {
+            return standard;
+        }
         #endregion
 
         #region Set_Implementation
         public void SetMessageField(uint position, string message)
         {
-            if (this.fields.ContainsKey(position))
-                this.fields[position] = message;
+            if (fields.ContainsKey(position))
+                fields[position] = message;
             else
-                this.fields.Add(new KeyValuePair<uint, string>(position, message));
+                fields.Add(new KeyValuePair<uint, string>(position, message));
         }
 
         public void SetMessageField(ISO_8583_1987 field, string message)
         {
-            this.InitializeMessages1987();
+            InitializeMessages1987();
 
-            if (this.fieldsEnum1987.ContainsKey(field))
-                this.fieldsEnum1987[field] = message;
+            if (fieldsEnum1987.ContainsKey(field))
+                fieldsEnum1987[field] = message;
             else
-                this.fieldsEnum1987.Add(new KeyValuePair<ISO_8583_1987, string>(field, message));
+                fieldsEnum1987.Add(new KeyValuePair<ISO_8583_1987, string>(field, message));
 
             SetMessageField((uint)field, message);
         }
 
         public void SetMessageField(ISO_8583_1987_FIELD field)
         {
-            this.InitializeMessages1987CustomEnum();
+            InitializeMessages1987CustomEnum();
 
-            ISO_8583_1987_FIELD? oldItem = this.fieldsCustomEnum1987.Find(item => item.Position == field.Position);
+            ISO_8583_1987_FIELD? oldItem = fieldsCustomEnum1987.Find(item => item.Position == field.Position);
 
-            if (this.fieldsCustomEnum1987.Contains(oldItem))
-                this.fieldsCustomEnum1987.Remove(oldItem);
+            if (fieldsCustomEnum1987.Contains(oldItem))
+                fieldsCustomEnum1987.Remove(oldItem);
 
-            this.fieldsCustomEnum1987.Add(field);
+            fieldsCustomEnum1987.Add(field);
 
             SetMessageField(field.Position, field.Message);
         }
 
         public void SetMessageField(ISO_8583_1993 field, string message)
         {
-            this.InitializeMessages1993();
+            InitializeMessages1993();
 
-            if (this.fieldsEnum1993.ContainsKey(field))
-                this.fieldsEnum1993[field] = message;
+            if (fieldsEnum1993.ContainsKey(field))
+                fieldsEnum1993[field] = message;
             else
-                this.fieldsEnum1993.Add(new KeyValuePair<ISO_8583_1993, string>(field, message));
+                fieldsEnum1993.Add(new KeyValuePair<ISO_8583_1993, string>(field, message));
 
             SetMessageField((uint)field, message);
         }
 
         public void SetMessageField(ISO_8583_1993_FIELD field)
         {
-            this.InitializeMessages1993CustomEnum();
+            InitializeMessages1993CustomEnum();
 
-            ISO_8583_1993_FIELD? oldItem = this.fieldsCustomEnum1993.Find(item => item.Position == field.Position);
+            ISO_8583_1993_FIELD? oldItem = fieldsCustomEnum1993.Find(item => item.Position == field.Position);
 
-            if (this.fieldsCustomEnum1993.Contains(oldItem))
-                this.fieldsCustomEnum1993.Remove(oldItem);
+            if (fieldsCustomEnum1993.Contains(oldItem))
+                fieldsCustomEnum1993.Remove(oldItem);
 
-            this.fieldsCustomEnum1993.Add(field);
+            fieldsCustomEnum1993.Add(field);
 
             SetMessageField(field.Position, field.Message);
         }
@@ -355,19 +395,21 @@ namespace NetCoreIso8583x64Lib
         {
             ValidateClassAttribute(message);
 
+            Initialize();
+
             ProcessISO8583SetFieldAttributes(message);
         }
 
         public void SetMessageFields(IDictionary<uint, string> fields)
         {
+            Initialize();
             this.fields = fields;
         }
 
         public void SetMessageFields(IDictionary<ISO_8583_1987, string> fields)
         {
-            this.fieldsEnum1987 = fields;
-
-            this.fields.Clear();
+            Initialize();
+            fieldsEnum1987 = fields;
 
             foreach (KeyValuePair<ISO_8583_1987, string> field in fields)
                 this.fields.Add((uint)field.Key, field.Value);
@@ -375,9 +417,8 @@ namespace NetCoreIso8583x64Lib
 
         public void SetMessageFields(List<ISO_8583_1987_FIELD> fields)
         {
-            this.fieldsCustomEnum1987 = fields;
-
-            this.fields.Clear();
+            Initialize();
+            fieldsCustomEnum1987 = fields;
 
             foreach (ISO_8583_1987_FIELD field in fields)
                 this.fields.Add(field.Position, field.Message);
@@ -385,9 +426,8 @@ namespace NetCoreIso8583x64Lib
 
         public void SetMessageFields(IDictionary<ISO_8583_1993, string> fields)
         {
-            this.fieldsEnum1993 = fields;
-
-            this.fields.Clear();
+            Initialize();
+            fieldsEnum1993 = fields;
 
             foreach (KeyValuePair<ISO_8583_1993, string> field in fields)
                 this.fields.Add((uint)field.Key, field.Value);
@@ -395,47 +435,48 @@ namespace NetCoreIso8583x64Lib
 
         public void SetMessageFields(List<ISO_8583_1993_FIELD> fields)
         {
-            this.fieldsCustomEnum1993 = fields;
-
-            this.fields.Clear();
+            Initialize();
+            fieldsCustomEnum1993 = fields;
 
             foreach (ISO_8583_1993_FIELD field in fields)
                 this.fields.Add(field.Position, field.Message);
         }
+
+        public void SetStandard(STANDARD standard)
+        {
+            this.standard = standard;
+        }
         #endregion
 
         #region Pack_and_Unpack_Implementation
-        public byte[] PackMessage()
+        public void PackMessage()
         {
             InitializeIsoMessage();
 
-            foreach (KeyValuePair<uint, string> message in this.fields)
-                MsgSetField(message.Key, message.Value, ref this.isoMessage);
-            
-            byte[] byteArray = new byte[SumMessageFieldSize()];
-            uint packedSize = 0;
+            foreach (KeyValuePair<uint, string> message in fields)
+                MsgSetField(message.Key, message.Value, ref isoMessage);
 
-            PackMessage(ref this.handler, ref this.isoMessage, byteArray, ref packedSize);
+            packedMessage = new byte[SumMessageFieldSize()];
 
-            FreeMessage(ref this.isoMessage);
+            PackMessage(ref handler, ref isoMessage, packedMessage, ref packedSize);
 
-            return byteArray;
+            FreeMessage(ref isoMessage);
         }
 
-        public void UnpackMessage(byte[] byteArray)
+        public void UnpackMessage(byte[] byteArray, uint size)
         {
             InitializeIsoMessage();
-            UnpackMessage(ref this.handler, byteArray, (uint)byteArray.Length, ref this.isoMessage);
+            UnpackMessage(ref handler, byteArray, size, ref isoMessage);
 
-            this.fields = new Dictionary<uint, string>();
+            fields = new Dictionary<uint, string>();
 
-            for (uint index = 0; index < this.isoMessage.field.Length; index++)
-                if (this.isoMessage.field[index].len > 0)
+            for (uint index = 0; index < isoMessage.field.Length; index++)
+                if (isoMessage.field[index].len > 0)
                 {
-                    byte[] byteFieldValue = new byte[this.isoMessage.field[index].len];
-                    Marshal.Copy(this.isoMessage.field[index].ptr, byteFieldValue, 0, (int)this.isoMessage.field[index].len);
+                    byte[] byteFieldValue = new byte[GetMessageFieldSize(index, true)];
+                    Marshal.Copy(isoMessage.field[index].ptr, byteFieldValue, 0, (int)isoMessage.field[index].len);
                     string fieldValue = System.Text.Encoding.Default.GetString(byteFieldValue);
-                    this.fields.Add(new KeyValuePair<uint, string>(index, fieldValue));
+                    fields.Add(new KeyValuePair<uint, string>(index, fieldValue));
                 }
         }
         #endregion
@@ -451,19 +492,19 @@ namespace NetCoreIso8583x64Lib
         {
             if (disposing)
             {
-                this.fields.Clear();
+                fields.Clear();
 
-                if (this.fieldsEnum1987 != null)
-                    this.fieldsEnum1987.Clear();
+                if (fieldsEnum1987 != null)
+                    fieldsEnum1987.Clear();
 
-                if (this.fieldsCustomEnum1987 != null)
-                    this.fieldsCustomEnum1987.Clear();
+                if (fieldsCustomEnum1987 != null)
+                    fieldsCustomEnum1987.Clear();
 
-                if (this.fieldsEnum1993 != null)
-                    this.fieldsEnum1993.Clear();
+                if (fieldsEnum1993 != null)
+                    fieldsEnum1993.Clear();
 
-                if (this.fieldsCustomEnum1993 != null)
-                    this.fieldsCustomEnum1993.Clear();
+                if (fieldsCustomEnum1993 != null)
+                    fieldsCustomEnum1993.Clear();
             }
         }
         #endregion

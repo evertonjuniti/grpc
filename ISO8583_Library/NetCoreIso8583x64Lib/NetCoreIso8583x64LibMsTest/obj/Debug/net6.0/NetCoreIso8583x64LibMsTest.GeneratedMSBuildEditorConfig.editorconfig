@@ -7,4 +7,4 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = NetCoreIso8583x64LibMsTest
-build_property.ProjectDir = C:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\
+build_property.ProjectDir = c:\Users\Everton Juniti Ogura\Documents\Github\poc-iso8583\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64LibMsTest\

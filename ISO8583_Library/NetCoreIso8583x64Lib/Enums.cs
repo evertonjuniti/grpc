@@ -181,7 +181,7 @@
         /// </summary>
         Service_Restriction_Code = 40,
         /// <summary>
-        /// Card Acceptor Terminal Id: size = 3, fixed data
+        /// Card Acceptor Terminal Id: size = 8, fixed data
         /// </summary>
         Card_Acceptor_Terminal_Id = 41,
         /// <summary>

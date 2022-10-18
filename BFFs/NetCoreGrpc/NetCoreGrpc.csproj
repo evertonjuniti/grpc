@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>68d54a22-0192-4905-a15d-9ad6c41a15a9</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="iso8583.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="iso8583.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\message.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.49.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64Lib.csproj" />
+    <ProjectReference Include="..\NetCoreHelperLib\NetCoreHelperLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NetCoreIso8583x64Lib">
+      <HintPath>..\..\ISO8583_Library\NetCoreIso8583x64Lib\bin\x64\Release\net6.0\NetCoreIso8583x64Lib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

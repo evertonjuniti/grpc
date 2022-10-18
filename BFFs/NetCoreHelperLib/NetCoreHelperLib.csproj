@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ISO8583_Library\NetCoreIso8583x64Lib\NetCoreIso8583x64Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NetCoreIso8583x64Lib">
+      <HintPath>..\..\ISO8583_Library\NetCoreIso8583x64Lib\bin\x64\Release\net6.0\NetCoreIso8583x64Lib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

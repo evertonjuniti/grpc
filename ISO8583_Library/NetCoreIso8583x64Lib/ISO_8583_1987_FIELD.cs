@@ -214,7 +214,7 @@ namespace NetCoreIso8583x64Lib
         /// Card Acceptor Terminal Id: size = 3, fixed data
         /// </summary>
         public static readonly ISO_8583_1987_FIELD Card_Acceptor_Terminal_Id =
-            new ISO_8583_1987_FIELD(41, "Card Acceptor Terminal Id", STANDARD.ISO_8583_1987, FIELD_TYPE.FIXED, 3);
+            new ISO_8583_1987_FIELD(41, "Card Acceptor Terminal Id", STANDARD.ISO_8583_1987, FIELD_TYPE.FIXED, 8);
         /// <summary>
         /// Card Acceptor Id Code: size = 15, fixed data
         /// </summary>

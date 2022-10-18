@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "NetCoreGrpc";
+
+package message;
+
+service Messages {
+	rpc CallCommonMessage (MessageRequest) returns (CommonMessageReply);
+	rpc CallISO8583Message (MessageRequest) returns (Iso8583MessageReply);
+}
+
+message MessageRequest {
+	string code = 1;
+}
+
+message CommonMessageReply {
+	int64 id = 1;
+	string name = 2;
+	bool active = 3;
+	string date = 4;
+	repeated CommonMessageItem items = 5;
+}
+
+message CommonMessageItem {
+	int64 itemId = 1;
+	string description = 2;
+	double value = 3;
+}
+
+message Iso8583MessageReply {
+	repeated Iso8583MessageStructure mensagens = 1;
+}
+
+message Iso8583MessageStructure {
+	bytes byteArray = 1;
+	uint32 packedSize = 2;
+}
