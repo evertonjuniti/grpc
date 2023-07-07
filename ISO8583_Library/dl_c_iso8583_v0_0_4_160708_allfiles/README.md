@@ -52,6 +52,8 @@ After downloading the file, we will get this executable file.
 
 ![Print - Installation - 3](/../main/images/c_cpp_compiler_installation_print3.png)
 
+!!! - If the above link is broken, no worries, in this repository I've created a folder called `Installer`, I've compressed the executable file in a set of `.rar` files (because Github have a size limit for file upload), you just need `WinRAR` to decompress the executable file.
+
 Double click on the executable file. Then click Next.
 
 ![Print - Installation - 4](/../main/images/c_cpp_compiler_installation_print4.png)
@@ -132,17 +134,17 @@ Click the start button. Find the MSYS2 64bit folder. Click on that folder to exp
 
 ![Print - Installation - 23](/../main/images/c_cpp_compiler_installation_print23.png)
 
-If you are using a 64 bit operating system like I am, then we need to use the MSYS2 MinGW x64 terminal. Click on the terminal to open that.
+!!! - If you are using a 64 bit operating system like I am, then we need to use the MSYS2 MinGW x64 terminal. Click on the terminal to open that.
 
 ![Print - Installation - 24](/../main/images/c_cpp_compiler_installation_print24.png)
 
-But, if you are using a 32 bit operating system, then you have to use the MSYS2 MinGW x86 terminal. Then, you need to open that terminal.
+!!! - But, if you are using a 32 bit operating system, then you have to use the MSYS2 MinGW x86 terminal. Then, you need to open that terminal.
 
 ![Print - Installation - 25](/../main/images/c_cpp_compiler_installation_print25.png)
 
-As I am using a 64 bit operating system, I have opened the terminal for 64 bit. Apply the command `pacman -S mingw-w64-x86_64-gcc` to install the compilers.
+!!! - As I am using a 64 bit operating system, I have opened the terminal for 64 bit. Apply the command `pacman -S mingw-w64-x86_64-gcc` to install the compilers.
 
-If you are using a 32 bit operating system, then you have to apply the command `pacman -S mingw-w64-i686-gcc` in your 32 bit terminal.
+!!! - If you are using a 32 bit operating system, then you have to apply the command `pacman -S mingw-w64-i686-gcc` in your 32 bit terminal.
 
 ![Print - Installation - 26](/../main/images/c_cpp_compiler_installation_print26.png)
 
@@ -164,9 +166,9 @@ You've now finished installing the compilers.
 
 ### Step 3 - How to Install the Debugger
 
-If you are using a 64 bit operating system like I am, then you have to apply the command `pacman -S mingw-w64-x86_64-gdb`.
+!!! - If you are using a 64 bit operating system like I am, then you have to apply the command `pacman -S mingw-w64-x86_64-gdb`.
 
-If you are using a 32 bit operating system, then you have to apply the command `pacman -S mingw-w64-i686-gdb` in your 32 bit terminal.
+!!! - If you are using a 32 bit operating system, then you have to apply the command `pacman -S mingw-w64-i686-gdb` in your 32 bit terminal.
 
 ![Print - Installation - 31](/../main/images/c_cpp_compiler_installation_print31.png)
 
@@ -194,9 +196,9 @@ I am assuming that you have installed the MSYS into the default directory like I
 
 ![Print - Installation - 37](/../main/images/c_cpp_compiler_installation_print37.png)
 
-If you are using a 64 bit operating system like I am, then go to the `mingw64` folder.
+!!! - If you are using a 64 bit operating system like I am, then go to the `mingw64` folder.
 
-If you are using a 32 bit operating system, then go to the `mingw32` folder.
+!!! - If you are using a 32 bit operating system, then go to the `mingw32` folder.
 
 ![Print - Installation - 38](/../main/images/c_cpp_compiler_installation_print38.png)
 
@@ -210,7 +212,7 @@ Copy the directory.
 
 ![Print - Installation - 40](/../main/images/c_cpp_compiler_installation_print40.png)
 
-If you are using a 32 bit operating system, and you also installed the MSYS2 in the default directory, then your directory should be like the following:
+!!! - If you are using a 32 bit operating system, and you also installed the MSYS2 in the default directory, then your directory should be like the following:
 
 `C:\msys64\mingw32\bin`
 
@@ -363,6 +365,6 @@ We can see our newly created `iso8583.dll` file:
 
 We made it! We compiled this ISO-8583 library and can use it with other programming languages!
 
-Because I'm running all of this on a 64-bit OS, and knowing that my configuration for the compiler also follows this OS architecture, the `.dll` generated file is also for 64-bit applications.
+!!! - Because I'm running all of this on a 64-bit OS, and knowing that my configuration for the compiler also follows this OS architecture, the `.dll` generated file is also for 64-bit applications.
 
-If you need also the 32-bit `.dll` file you'll need to use `C:\msys64\mingw32\bin` preceding all of the above commands to create the `.o` files and to create the `.dll` file.
+!!! - If you need also the 32-bit `.dll` file you'll need to use `C:\msys64\mingw32\bin` preceding all of the above commands to create the `.o` files and to create the `.dll` file.
