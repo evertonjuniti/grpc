@@ -1,37 +1,15 @@
 # PoC - ISO8583
 
-This PoC (Proof of Concept) project aims an implementation using a ISO 8583 library to reduce the payload in any request-response integration between applications.
+This PoC (Proof of Concept) project aims an implementation using a ISO-8583 library to reduce the payload in any request-response integration between applications.
 
-I'll try to implement this within some programming languages (like C#, Kotlin, Swift and Node.js) and some different protocols (like REST and gRPC).
+So far I've implemented only wiht .Net Core programming language, my goal is to compare pure REST Api call vs REST Api call with "compacted" payload using ISO-8583 C dll vs pure gRPC.
 
-EBCDIC RFC: [https://www.ietf.org/rfc/rfc183.html](https://www.ietf.org/rfc/rfc183.html)
+To know more about the C project, you can visit Oscar Sanderson ISO-8583 website: [https://oscarsanderson.com/iso-8583/](https://oscarsanderson.com/iso-8583/), you can download the `.tar` files for one of the versions.
 
-Oscar Sanderson ISO-8583: [https://oscarsanderson.com/iso-8583/](https://oscarsanderson.com/iso-8583/)
+In this repository, I've already downloaded one of the versions, you can find the files within `ISO8583_Library\dl_c_iso8583_v0_0_4_160708_allfiles` folder, in which is the one I've used for this PoC.
 
-How to install C and C++ compiler on Windows: [https://www.freecodecamp.org/news/how-to-install-c-and-cpp-compiler-on-windows/](https://www.freecodecamp.org/news/how-to-install-c-and-cpp-compiler-on-windows/)
+You can find out how to install the C compiler and how to compile the C project within this repository too! Check the instructions in the README.md file within `ISO8583_Library\dl_c_iso8583_v0_0_4_160708_allfiles` folder.
 
-MSYS2: [https://www.msys2.org/](https://www.msys2.org/)
+You can find out how to run the PoC with the given source code in this repository. Check the instructions in the README.md file within 'BFFs' folder.
 
-GCC: [https://gcc.gnu.org/install/](https://gcc.gnu.org/install/)
-
-To compile an .c file and output to and .o file, use the following command:
-
-'cc -c [.c filename]' -> -c will output the result in an .o file
-
-To make an .dll file, type the following command:
-
-'gcc -shared -o iso8583.dll dl_iso8583.o dl_iso8583_common.o dl_iso8583_defs_1987.o dl_iso8583_defs_1993.o dl_iso8583_fields.o dl_mem.o dl_output.o dl_str.o dl_time.o dl_timer.o'
-
-https://blog.quickbird.uk/calling-c-from-net-core-759563bab75d
-
-https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-data-with-platform-invoke
-
-https://learn.microsoft.com/en-us/dotnet/framework/interop/marshalling-classes-structures-and-unions
-
-https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types
-
-https://codereview.stackexchange.com/questions/190907/custom-enumeration-classes
-
-https://stackoverflow.com/questions/6637679/reflection-get-attribute-name-and-value-on-property
-
-Wireshark filter: ((tcp.dstport == 8080) or (tcp.dstport == 7158) or (tcp.dstport == 5051))
+Is important to know that the BFFs I've create depends on the application I've created in the `generic-api` folder. I've just create a dumb Api using Java Spring Boot with a simple structure to exchange information with each BFF. So you'll need to run this `generic-api` too if you want the BFFs to work! You can use [Eclipse](https://www.eclipse.org/) to run this Java application.

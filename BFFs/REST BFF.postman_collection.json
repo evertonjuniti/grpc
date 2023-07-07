@@ -1,0 +1,31 @@
+{
+	"info": {
+		"_postman_id": "ce011fa4-09c0-4b89-9a3e-e52c560ece25",
+		"name": "REST BFF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1643164"
+	},
+	"item": [
+		{
+			"name": ".Net Core",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7158/api/Message/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7158",
+					"path": [
+						"api",
+						"Message",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
