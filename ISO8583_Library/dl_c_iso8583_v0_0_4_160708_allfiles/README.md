@@ -34,4 +34,4 @@ But in case the site is down, I'll show you how to do all the steps (they're the
 
 Firstly we need to download an executable file from MSYS2. Go to the official website of MSYS2: [https://www.msys2.org/](https://www.msys2.org/). The website looks like below as of today.
 
-![Print 1](/../../../main/images/c_cpp_compiler_installation_print1.png)
+![Print 1](/../../main/images/c_cpp_compiler_installation_print1.png)git 
