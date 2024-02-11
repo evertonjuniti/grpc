@@ -2,7 +2,7 @@
 
 This PoC (Proof of Concept) project aims an implementation using a ISO-8583 library to reduce the payload in any request-response integration between applications.
 
-So far I've implemented only wiht .Net Core programming language, my goal is to compare pure REST Api call vs REST Api call with "compacted" payload using ISO-8583 C dll vs pure gRPC.
+So far I've implemented only with .Net Core programming language, my goal is to compare pure REST Api call vs REST Api call with "compacted" payload using ISO-8583 C dll vs pure gRPC.
 
 To know more about the C project, you can visit Oscar Sanderson ISO-8583 website: [https://oscarsanderson.com/iso-8583/](https://oscarsanderson.com/iso-8583/), you can download the `.tar` files for one of the versions.
 
@@ -12,4 +12,6 @@ You can find out how to install the C compiler and how to compile the C project 
 
 You can find out how to run the PoC with the given source code in this repository. Check the instructions in the README.md file within 'BFFs' folder.
 
-Is important to know that the BFFs I've create depends on the application I've created in the `generic-api` folder. I've just create a dumb Api using Java Spring Boot with a simple structure to exchange information with each BFF. So you'll need to run this `generic-api` too if you want the BFFs to work! You can use [Eclipse](https://www.eclipse.org/) to run this Java application.
+Is important to know that the BFFs I've created depends on the application in the `generic-api` folder. I've just created a dumb Api using Java Spring Boot with a simple structure to exchange information with each BFF. So you'll need to run this `generic-api` too if you want the BFFs to work! You can use [Eclipse](https://www.eclipse.org/) to run this Java application.
+
+Using a local environment for tests, my conclusion is that using gRPC is way better than trying to use ISO-8583 because of its simplicity with the Proto Schema, and also not needing to use the C Library for the ISO-8583 message pattern.
